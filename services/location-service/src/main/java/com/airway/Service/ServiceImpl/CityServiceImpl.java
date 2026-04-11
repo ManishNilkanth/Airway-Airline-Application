@@ -1,11 +1,12 @@
 package com.airway.Service.ServiceImpl;
 
-import com.airway.Exceptions.CityAlreadyExistsByCityCodeException;
-import com.airway.Exceptions.CityNotFoundException;
+import com.airway.exceptions.CityAlreadyExistsByCityCodeException;
+import com.airway.exceptions.CityNotFoundException;
 import com.airway.Repository.CityRepository;
 import com.airway.Service.CityService;
 import com.airway.mapper.CityMapper;
 import com.airway.model.City;
+import com.airway.payload.reposnse.ApiResponse;
 import com.airway.payload.reposnse.CityResponse;
 import com.airway.payload.request.CityRequest;
 import lombok.RequiredArgsConstructor;
@@ -60,7 +61,7 @@ public class CityServiceImpl implements CityService {
     }
 
     @Override
-    public void deleteCity(Long id) {
+    public ApiResponse deleteCity(Long id) {
 
         if(!cityRepository.existsById(id))
         {
@@ -69,6 +70,7 @@ public class CityServiceImpl implements CityService {
             );
         }
         cityRepository.deleteById(id);
+        return new ApiResponse("City deleted successfully");
     }
 
     @Override

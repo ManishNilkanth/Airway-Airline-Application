@@ -1,5 +1,6 @@
 package com.airway.Service;
 
+import com.airway.payload.reposnse.ApiResponse;
 import com.airway.payload.reposnse.CityResponse;
 import com.airway.payload.request.CityRequest;
 import org.springframework.data.domain.Page;
@@ -13,7 +14,7 @@ public interface CityService {
 
     CityResponse updateCity(Long id, CityRequest request);
 
-    void deleteCity(Long id);
+    ApiResponse deleteCity(Long id);
 
     Page<CityResponse> getAllCities(Pageable pageable);
 

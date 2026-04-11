@@ -1,4 +1,4 @@
-package com.airway.Exceptions;
+package com.airway.exceptions;
 
 public class CityAlreadyExistsByCityCodeException extends RuntimeException {
 

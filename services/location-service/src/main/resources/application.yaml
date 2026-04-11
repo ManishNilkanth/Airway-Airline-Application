@@ -10,7 +10,16 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: create-only
-    properties:
-      hibernate:
-        dialect: org.hibernate.dialect.MySQL8Dialect
+      ddl-auto: update
+
+#for debugging only not for production
+logging:
+  level:
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql: TRACE
+
+#For engine Health check using actuator
+#management:
+#  metrics:
+#    enable:
+#      hikari: true
