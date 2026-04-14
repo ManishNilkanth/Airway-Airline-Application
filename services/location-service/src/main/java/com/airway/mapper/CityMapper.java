@@ -35,6 +35,8 @@ public class CityMapper {
 
     public static City updateCity(City city, CityRequest request)
     {
+        if(request == null) return city;
+
         if(request.getName() != null) city.setName(request.getName());
 
         if(request.getCityCode() != null) city.setCityCode(request.getCityCode().toUpperCase().trim());

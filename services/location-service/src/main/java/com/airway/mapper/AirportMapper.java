@@ -37,7 +37,7 @@ public class AirportMapper {
 
     public static Airport uptadeAirport(Airport airport,AirportRequest request)
     {
-        if(request == null) return  null;
+        if(request == null) return  airport;
 
         if(request.getName() != null)  airport.setName(request.getName());
 
