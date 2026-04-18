@@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
+import org.jspecify.annotations.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -24,15 +25,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(
             @NotNull HttpServletRequest request,
-            @NotNull HttpServletResponse response,
-            @NotNull FilterChain filterChain
+            @NonNull HttpServletResponse response,
+            @NonNull FilterChain filterChain
     ) throws ServletException, IOException {
-
-        // Allow auth endpoints
-        if (request.getServletPath().startsWith("/api/auth")) {
-            filterChain.doFilter(request, response);
-            return;
-        }
 
         String header = request.getHeader("Authorization");
 
@@ -43,25 +38,30 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         String jwt = header.substring(7);
 
-        // Validate token (no DB call)
-        if (jwtService.isTokenValid(jwt)) {
+        try {
+            if (jwtService.isTokenValid(jwt)) {
 
-            Long userId = jwtService.extractUserId(jwt);
-            String email = jwtService.extractUsername(jwt);
-            List<String> roles = jwtService.extractRoles(jwt);
+                Long userId = jwtService.extractUserId(jwt);
+                List<String> roles = jwtService.extractRoles(jwt);
 
-            UsernamePasswordAuthenticationToken authToken =
-                    new UsernamePasswordAuthenticationToken(
-                            userId,   //store userId as principal
-                            null,
-                            roles.stream()
-                                    .map(SimpleGrantedAuthority::new)
-                                    .toList()
-                    );
+                UsernamePasswordAuthenticationToken authToken =
+                        new UsernamePasswordAuthenticationToken(
+                                userId,
+                                null,
+                                roles.stream()
+                                        .map(SimpleGrantedAuthority::new)
+                                        .toList()
+                        );
 
-            SecurityContextHolder.getContext().setAuthentication(authToken);
+                SecurityContextHolder.getContext().setAuthentication(authToken);
+            }
+
+        } catch (Exception ex) {
+            SecurityContextHolder.clearContext();
         }
 
         filterChain.doFilter(request, response);
     }
+
+    //todo test user,location and airline service together for security functioning.
 }

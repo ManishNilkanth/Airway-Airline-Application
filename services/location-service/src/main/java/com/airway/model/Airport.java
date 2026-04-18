@@ -33,8 +33,9 @@ public class Airport {
     @Column(name = "time_zone_id",length = 50)
     private String timeZone;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnore
+    @JoinColumn(name = "city_id")
     private City city;
 
     @JsonIgnore

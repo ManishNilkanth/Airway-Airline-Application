@@ -1,6 +1,6 @@
 
 server:
-  port: 5001
+  port: 5002
 spring:
   application:
     name: airline-core-service
