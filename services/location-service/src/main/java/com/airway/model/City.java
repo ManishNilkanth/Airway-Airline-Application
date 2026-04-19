@@ -21,7 +21,7 @@ public class City {
     @Column(nullable = false,unique = true)
     private  String cityCode;
 
-    @Column(nullable = false,unique = true)
+    @Column(nullable = false)
     private String countryCode;
 
     @Column(nullable = false)

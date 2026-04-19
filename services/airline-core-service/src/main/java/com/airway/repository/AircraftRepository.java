@@ -9,9 +9,9 @@ import java.util.List;
 @Repository
 public interface AircraftRepository extends JpaRepository<Aircraft, Long> {
 
-    List<Aircraft> findByOwnerId(Long ownerId);
-
-    boolean existsByOwnerId(Long ownerId);
-
     boolean existsByCode(String code);
+
+    Aircraft findByIdAndAirlineId(Long aircraftId, Long id);
+
+    List<Aircraft> findByAirlineId(Long id);
 }

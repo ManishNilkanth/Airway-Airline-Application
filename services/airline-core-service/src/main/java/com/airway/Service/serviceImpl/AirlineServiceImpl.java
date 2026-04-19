@@ -2,8 +2,7 @@ package com.airway.Service.serviceImpl;
 
 import com.airway.Service.AirlineService;
 import com.airway.enums.AirlineStatus;
-import com.airway.exceptions.AirlineNotFoundByAirlineId;
-import com.airway.exceptions.AirlineNotFoundByOwnerId;
+import com.airway.exceptions.*;
 import com.airway.mapper.AirlineMapper;
 import com.airway.model.Airline;
 import com.airway.payload.reposnse.AirlineDropdownItem;
@@ -29,25 +28,27 @@ public class AirlineServiceImpl implements AirlineService {
     @Override
     public AirlineResponse createAirline(AirlineRequest request, Long ownerId) {
 
+        if(airlineRepository.existsByIataCode(request.getIataCode()))
+        {
+            throw new AirlineExistsByIataCodeException(
+                    String.format("Airline exists by Iata Code %s",request.getIataCode())
+            );
+        }
+        if(airlineRepository.existsByIcaoCode(request.getIcaoCode()))
+        {
+            throw new AirlineExistsByIcaoCodeException(
+                    String.format("Airline exists by Icao Code %s",request.getIcaoCode())
+            );
+        }
         Airline airline = AirlineMapper.mapToAirline(request,ownerId);
         Airline savedAirline = airlineRepository.save(airline);
         return AirlineMapper.mapToAirlineResponse(savedAirline);
     }
 
     @Override
-    public AirlineResponse getAirlineByOwner(Long ownerId) {
-        Airline airline = airlineRepository.findByOwnerId(ownerId).orElseThrow(()->
-                new AirlineNotFoundByOwnerId(
-                        String.format("Airline not found with owner Id %d",ownerId)
-                )
-        );
-        return AirlineMapper.mapToAirlineResponse(airline);
-    }
-
-    @Override
     public AirlineResponse getAirlineById(Long id) {
         Airline airline = airlineRepository.findById(id).orElseThrow(()->
-                new AirlineNotFoundByAirlineId(
+                new AirlineNotFoundByAirlineIdException(
                         String.format("Airline not found with airline Id %d",id)
                 )
         );
@@ -56,24 +57,55 @@ public class AirlineServiceImpl implements AirlineService {
 
     @Override
     public Page<AirlineResponse> getAllAirlines(Pageable pageable) {
-        return airlineRepository.findAll(pageable)
-                .map(AirlineMapper::mapToAirlineResponse);
+        Page<Airline> airlines = airlineRepository.findAll(pageable);
+
+        if(airlines == null)
+        {
+            throw new AirlineNotFoundByAirlineIdException("Airline not found");
+        }
+        return airlines.map(AirlineMapper::mapToAirlineResponse);
     }
 
     @Override
-    public Page<AirlineResponse> getAllAirlinesByOwner(Pageable pageable, Long ownerId) {
-        return airlineRepository.findAllByOwnerId(pageable,ownerId)
-                .map(AirlineMapper::mapToAirlineResponse);
+    public Page<AirlineResponse> getAllAirlinesByOwnerId(Pageable pageable, Long ownerId) {
+        Page<Airline> airlines = airlineRepository.findAllByOwnerId(pageable,ownerId);
+        if(airlines == null)
+        {
+            throw new AirlineNotFoundByAirlineIdException("Airline not found");
+        }
+        return airlines.map(AirlineMapper::mapToAirlineResponse);
     }
 
     @Override
-    public AirlineResponse updateAirline(AirlineRequest request, Long ownerId) {
+    public AirlineResponse updateAirline(AirlineRequest request, Long ownerId,Long airlineId) {
 
-        Airline airline = airlineRepository.findByOwnerId(ownerId).orElseThrow(()->
-                new AirlineNotFoundByOwnerId(
-                        String.format("Airline not found with owner Id %d",ownerId)
+        if(!airlineRepository.existsByOwnerId(ownerId))
+        {
+            throw new AircraftNotFoundByOwnerIdException(
+                    String.format("Airline not found by owner id %d",ownerId)
+            );
+        }
+
+        Airline airline = airlineRepository.findById(airlineId).orElseThrow(()->
+                new AirlineNotFoundByAirlineIdException(
+                   String.format("Airline not found with airline id %d",airlineId)
                 )
         );
+
+        if(!airline.getIataCode().equals(request.getIataCode()) &&
+                airlineRepository.existsByIataCode(request.getIataCode()))
+        {
+            throw new AirlineExistsByIataCodeException(
+                    String.format("Airline exists by Iata Code %s",request.getIataCode())
+            );
+        }
+        if(!airline.getIcaoCode().equals(request.getIcaoCode()) &&
+                airlineRepository.existsByIcaoCode(request.getIcaoCode()))
+        {
+            throw new AirlineExistsByIcaoCodeException(
+                    String.format("Airline exists by Icao Code %s",request.getIcaoCode())
+            );
+        }
         AirlineMapper.updateAirline(airline,request);
         Airline savedAirline = airlineRepository.save(airline);
         return AirlineMapper.mapToAirlineResponse(savedAirline);
@@ -83,13 +115,13 @@ public class AirlineServiceImpl implements AirlineService {
     public ApiResponse deleteAirLine(Long id, Long ownerId) {
         if(!airlineRepository.existsByOwnerId(ownerId))
         {
-            throw new AirlineNotFoundByOwnerId(
+            throw new AirlineNotFoundByOwnerIdException(
                     String.format("Airline not found with owner Id %d",ownerId)
             );
         }
         if(!airlineRepository.existsById(id))
         {
-            throw new AirlineNotFoundByAirlineId(
+            throw new AirlineNotFoundByAirlineIdException(
                     String.format("Airline not found with airline Id %d",id)
             );
         }
@@ -101,7 +133,7 @@ public class AirlineServiceImpl implements AirlineService {
     @Override
     public AirlineResponse changeStatusByAdmin(Long airlineId, AirlineStatus status) {
         Airline airline = airlineRepository.findById(airlineId).orElseThrow(()->
-                new AirlineNotFoundByAirlineId(
+                new AirlineNotFoundByAirlineIdException(
                         String.format("Airline not found with airline Id %d",airlineId)
                 )
         );
@@ -121,6 +153,7 @@ public class AirlineServiceImpl implements AirlineService {
                         .iadaCode(airline.getIataCode())
                         .icaoCode(airline.getIcaoCode())
                         .logoUrl(airline.getLogUrl())
+                        .country("India")  //todo need to change dynamically
                         .build())
                 .toList();
     }

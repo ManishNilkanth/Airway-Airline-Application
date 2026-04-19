@@ -46,13 +46,11 @@ public class JwtService {
 
     //Generate token (used ONLY in user-service)
     public String generateToken(
-            Map<String, Object> extraClaims,
             String username,
             Long userId,
             List<String> roles
     ) {
         return Jwts.builder()
-                .setClaims(extraClaims)
                 .setSubject(username)
                 .claim("userId", userId)
                 .claim("roles", roles)

@@ -36,47 +36,6 @@ public class AirlineController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    @GetMapping("/admin")
-    public ResponseEntity<AirlineResponse> getAirlineByOwner() {
-        Long ownerId = SecurityUtils.getCurrentUserId();
-
-        AirlineResponse response = airlineService.getAirlineByOwner(ownerId);
-        return ResponseEntity.ok(response);
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<AirlineResponse> getAirlineByAirlineId(@PathVariable Long id) {
-        AirlineResponse response = airlineService.getAirlineByOwner(id);
-        return ResponseEntity.ok(response);
-    }
-
-    @GetMapping
-    public ResponseEntity<Page<AirlineResponse>> getAllAirlines(Pageable pageable) {
-        return ResponseEntity.ok(airlineService.getAllAirlines(pageable));
-    }
-
-    @GetMapping("/dropdown")
-    public ResponseEntity<List<AirlineDropdownItem>> getAirlinesForDropdown() {
-        return ResponseEntity.ok(airlineService.getAirlineDropdown());
-    }
-
-    @PutMapping
-    public ResponseEntity<AirlineResponse> updateAirline(
-            @Valid @RequestBody AirlineRequest request
-    ) {
-        Long ownerId = SecurityUtils.getCurrentUserId();
-
-        AirlineResponse response = airlineService.updateAirline(request, ownerId);
-        return ResponseEntity.ok(response);
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<ApiResponse> deleteAirlineById(@PathVariable Long id) {
-        Long ownerId = SecurityUtils.getCurrentUserId();
-
-        return ResponseEntity.ok(airlineService.deleteAirLine(id, ownerId));
-    }
-
     @PostMapping("/{id}/approve")
     public ResponseEntity<AirlineResponse> approveAirline(@PathVariable Long id) {
         return ResponseEntity.ok(
@@ -96,5 +55,47 @@ public class AirlineController {
         return ResponseEntity.ok(
                 airlineService.changeStatusByAdmin(id, AirlineStatus.BANNED)
         );
+    }
+
+    @GetMapping("/{airlineId}")
+    public ResponseEntity<AirlineResponse> getAirlineByAirlineId(@PathVariable Long airlineId) {
+        AirlineResponse response = airlineService.getAirlineById(airlineId);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping
+    public ResponseEntity<Page<AirlineResponse>> getAllAirlines(Pageable pageable) {
+        return ResponseEntity.ok(airlineService.getAllAirlines(pageable));
+    }
+
+    @GetMapping("/admin")
+    public ResponseEntity<Page<AirlineResponse>> getAirlineByOwnerId(Pageable pageable) {
+        Long ownerId = SecurityUtils.getCurrentUserId();
+
+        Page<AirlineResponse> response = airlineService.getAllAirlinesByOwnerId(pageable,ownerId);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/dropdawn")
+    public ResponseEntity<List<AirlineDropdownItem>> getAirlinesForDropdown() {
+        return ResponseEntity.ok(airlineService.getAirlineDropdown());
+    }
+
+    @PutMapping("/{airlineId}")
+    public ResponseEntity<AirlineResponse> updateAirline(
+            @Valid @RequestBody AirlineRequest request,
+            @PathVariable Long airlineId
+    ) {
+        Long ownerId = SecurityUtils.getCurrentUserId();
+
+        AirlineResponse response = airlineService.updateAirline(request, ownerId,airlineId);
+        return ResponseEntity.ok(response);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ApiResponse> deleteAirlineById(@PathVariable Long id) {
+        Long ownerId = SecurityUtils.getCurrentUserId();
+
+        return ResponseEntity.ok(airlineService.deleteAirLine(id, ownerId));
     }
 }

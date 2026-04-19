@@ -7,6 +7,7 @@ import com.airway.enums.UserRole;
 import com.airway.exceptions.InvalidLoginCredentialsException;
 import com.airway.exceptions.SystemAdminSignupNotAllowedException;
 import com.airway.exceptions.UserExistsWithEmailException;
+import com.airway.exceptions.UserNotFoundException;
 import com.airway.model.User;
 import com.airway.payload.DTO.UserDTO;
 import com.airway.payload.reposnse.AuthResponse;
@@ -41,7 +42,12 @@ public class AuthServiceImpl implements AuthService {
         if (request.getRole() == UserRole.ROLE_SYSTEM_ADMIN) {
             throw new SystemAdminSignupNotAllowedException("You cannot signup as System admin");
         }
-
+        if(userRepository.existsByEmail(request.getEmail()))
+        {
+            throw new UserExistsWithEmailException(
+                    String.format("User exists by email %s", request.getEmail())
+            );
+        };
         User user = User.builder()
                 .fullName(request.getFullName())
                 .email(request.getEmail())
@@ -61,7 +67,6 @@ public class AuthServiceImpl implements AuthService {
         }
         List<String> roles = List.of(savedUser.getRole().name());
         String token = jwtService.generateToken(
-                null,
                 savedUser.getEmail(),
                 savedUser.getId(),
                 roles
@@ -78,6 +83,12 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public AuthResponse login(LoginRequest loginRequest) {
 
+        User userFromDb = userRepository.findByEmail(loginRequest.getEmail()).orElseThrow(()->
+                new UserNotFoundException(
+                        String.format("User not found by email %s",loginRequest.getEmail())
+                )
+        );
+
         try {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
@@ -89,15 +100,11 @@ public class AuthServiceImpl implements AuthService {
             throw new InvalidLoginCredentialsException("Invalid login credentials!");
         }
 
-        Optional<User> user = userRepository.findByEmail(loginRequest.getEmail());
-        User userFromDb = user.orElseThrow();
-
         userFromDb.setLastLogin(LocalDateTime.now());
         userRepository.save(userFromDb);
 
         List<String> roles = List.of(userFromDb.getRole().name());
         String token = jwtService.generateToken(
-                null,
                 userFromDb.getEmail(),
                 userFromDb.getId(),
                 roles

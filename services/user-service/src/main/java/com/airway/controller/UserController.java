@@ -3,6 +3,7 @@ package com.airway.controller;
 import com.airway.Service.UserService;
 import com.airway.payload.DTO.UserDTO;
 import com.airway.payload.reposnse.ApiResponse;
+import com.airway.security.SecurityUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,10 +18,9 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping("/profile")
-    public ResponseEntity<UserDTO> getUserProfile(
-            @RequestHeader("X-User-Email") String email
-    )
+    public ResponseEntity<UserDTO> getUserProfile()
     {
+        String email = SecurityUtils.getCurrentUserEmail();
         UserDTO response = userService.getUserByEmail(email);
         return ResponseEntity.ok(response);
     }

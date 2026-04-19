@@ -45,5 +45,4 @@ public class AirlineRequest {
 
     private String supportHours;
 
-    private Long ownerId;
 }

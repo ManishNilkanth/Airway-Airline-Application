@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -30,28 +31,28 @@ public class AircraftRequest {
     private String manufacturer;
 
     @NotNull(message = "Seating capacity is required")
-    @Positive(message = "Seating capacity must be positive")
+    @PositiveOrZero(message = "Seating capacity must be positive or zero")
     private Integer seatingCapacity;
 
-    @Positive(message = "Economy seats must be positive")
+    @PositiveOrZero(message = "Economy seats must be positive or zero")
     private Integer economySeats;
 
-    @Positive(message = "Premium economy seats must be positive")
+    @PositiveOrZero(message = "Premium economy seats must be positive or zero")
     private Integer premiumEconomySeats;
 
-    @Positive(message = "Business seats must be positive")
+    @PositiveOrZero(message = "Business seats must be positive or zero")
     private Integer businessSeats;
 
-    @Positive(message = "First class seats must be positive")
+    @PositiveOrZero(message = "First class seats must be positive or zero")
     private Integer firstClassSeats;
 
-    @Positive(message = "Range must be positive")
+    @PositiveOrZero(message = "Range must be positive or zero")
     private Integer rangeKm;
 
-    @Positive(message = "Cruising speed must be positive")
+    @PositiveOrZero(message = "Cruising speed must be positive or zero")
     private Integer cruisingSpeedKmh;
 
-    @Positive(message = "Maximum altitude must be positive")
+    @PositiveOrZero(message = "Maximum altitude must be positive or zero")
     private Integer maxAltitude;
 
     @Positive(message = "Year of manufacture must be positive")

@@ -22,17 +22,59 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Something went wrong");
     }
 
-    @ExceptionHandler(AirlineNotFoundByAirlineId.class)
-    public ResponseEntity<String> AirlineNotFoundByAirlineIdHandler(AirlineNotFoundByAirlineId ex)
+    @ExceptionHandler(AircraftExistsByAircraftCodeException.class)
+    public ResponseEntity<String> AircraftExistsByAircraftCodeHandler(AircraftExistsByAircraftCodeException ex)
+    {
+        log.warn("Business Exception: {}",ex.getMessage());
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
+    }
+
+    @ExceptionHandler(AirlineExistsByIataCodeException.class)
+    public ResponseEntity<String> AirlineExistsByIataCodeHandler(AirlineExistsByIataCodeException ex)
+    {
+        log.warn("Business Exception: {}",ex.getMessage());
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
+    }
+    @ExceptionHandler(AirlineExistsByIcaoCodeException.class)
+    public ResponseEntity<String> AirlineExistsByIcaoCodeHandler(AirlineExistsByIcaoCodeException ex)
+    {
+        log.warn("Business Exception: {}",ex.getMessage());
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
+    }
+
+
+    @ExceptionHandler(AircraftNotFoundByAircraftIdException.class)
+    public ResponseEntity<String> AircraftNotFoundByAircraftIdHandler(AircraftNotFoundByAircraftIdException ex)
     {
         log.warn("Business Exception: {}",ex.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
     }
-    @ExceptionHandler(AirlineNotFoundByOwnerId.class)
-    public ResponseEntity<String> AirlineNotFoundByOwnerIdHandler(AirlineNotFoundByOwnerId ex)
+
+    @ExceptionHandler(AircraftNotFoundByOwnerIdException.class)
+    public ResponseEntity<String> AircraftNotFoundByOwnerIdHandler(AircraftNotFoundByOwnerIdException ex)
     {
         log.warn("Business Exception: {}",ex.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+    }
+
+    @ExceptionHandler(AirlineNotFoundByAirlineIdException.class)
+    public ResponseEntity<String> AirlineNotFoundByAirlineIdHandler(AirlineNotFoundByAirlineIdException ex)
+    {
+        log.warn("Business Exception: {}",ex.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+    }
+
+    @ExceptionHandler(AirlineNotFoundByOwnerIdException.class)
+    public ResponseEntity<String> AirlineNotFoundByOwnerIdHandler(AirlineNotFoundByOwnerIdException ex)
+    {
+        log.warn("Business Exception: {}",ex.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+    }
+    @ExceptionHandler(SeatCountMissMatchException.class)
+    public ResponseEntity<String> SeatCountMissMatchExceptionHandler(SeatCountMissMatchException ex)
+    {
+        log.warn("Business Exception: {}",ex.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

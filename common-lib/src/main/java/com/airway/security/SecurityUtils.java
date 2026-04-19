@@ -12,4 +12,15 @@ public class SecurityUtils {
                         .getAuthentication())
                 .getPrincipal();
     }
+
+    public static String getCurrentUserEmail()
+    {
+        JwtUser jwtUser = (JwtUser) Objects.requireNonNull(SecurityContextHolder
+                        .getContext()
+                        .getAuthentication())
+                .getPrincipal();
+
+        assert jwtUser != null;
+        return jwtUser.getEmail();
+    }
 }

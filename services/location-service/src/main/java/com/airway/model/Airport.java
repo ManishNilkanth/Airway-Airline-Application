@@ -6,6 +6,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.ZoneId;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -31,7 +33,7 @@ public class Airport {
     private GeoCode geoCode;
 
     @Column(name = "time_zone_id",length = 50)
-    private String timeZone;
+    private ZoneId timeZone;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnore

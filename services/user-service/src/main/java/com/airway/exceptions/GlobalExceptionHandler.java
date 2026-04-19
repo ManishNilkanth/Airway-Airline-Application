@@ -23,7 +23,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(UserNotFoundException.class)
-    public ResponseEntity<String> UserNotfoundExceptionHandler(UserNotFoundException ex)
+    public ResponseEntity<String> UserNotFoundExceptionHandler(UserNotFoundException ex)
     {
         log.warn("Business Exception: {}",ex.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());

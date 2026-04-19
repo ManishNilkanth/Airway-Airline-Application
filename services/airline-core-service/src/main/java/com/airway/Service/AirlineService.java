@@ -14,15 +14,13 @@ public interface AirlineService {
 
     AirlineResponse createAirline(AirlineRequest request, Long ownerId);
 
-    AirlineResponse getAirlineByOwner(Long ownerId);
-
-    AirlineResponse getAirlineById(Long id);
+    AirlineResponse getAirlineById(Long airlineId);
 
     Page<AirlineResponse> getAllAirlines(Pageable pageable);
 
-    Page<AirlineResponse> getAllAirlinesByOwner(Pageable pageable, Long ownerId);
+    Page<AirlineResponse> getAllAirlinesByOwnerId(Pageable pageable, Long ownerId);
 
-    AirlineResponse updateAirline(AirlineRequest request,Long ownerId);
+    AirlineResponse updateAirline(AirlineRequest request,Long ownerId,Long airlineId);
 
     ApiResponse deleteAirLine(Long id, Long ownerId);
 

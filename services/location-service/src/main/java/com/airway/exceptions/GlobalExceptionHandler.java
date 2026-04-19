@@ -35,8 +35,8 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
     }
 
-    @ExceptionHandler(AirportAlreadyExistsByIADACode.class)
-    public ResponseEntity<String> AirportAlreadyExistsByIADACodeExceptionHandler(AirportAlreadyExistsByIADACode ex)
+    @ExceptionHandler(AirportAlreadyExistsByIADACodeException.class)
+    public ResponseEntity<String> AirportAlreadyExistsByIADACodeExceptionHandler(AirportAlreadyExistsByIADACodeException ex)
     {
         log.warn("Business Exception: {}",ex.getMessage());
         return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());

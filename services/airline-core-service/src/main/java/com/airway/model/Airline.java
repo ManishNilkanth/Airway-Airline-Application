@@ -51,7 +51,7 @@ public class Airline {
     private Long ownerId;
 
     @CreatedDate
-    @Column(unique = true,nullable = false)
+    @Column(nullable = false)
     private Instant createdAt;
 
     @LastModifiedDate

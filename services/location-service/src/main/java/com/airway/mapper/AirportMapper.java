@@ -28,8 +28,9 @@ public class AirportMapper {
                 .id(airport.getId())
                 .name(airport.getName())
                 .iataCode(airport.getIataCode())
-//                .timeZone(airport.getTimeZone())
+                .timeZone(airport.getTimeZone())
                 .address(airport.getAddress())
+                .detailedName(airport.getDetailedName())
                 .geoCode(airport.getGeoCode())
                 .city(CityMapper.mapToCityResponse(airport.getCity()))
                 .build();
@@ -46,6 +47,8 @@ public class AirportMapper {
         if(request.getAddress() != null) airport.setAddress(request.getAddress());
 
         if(request.getGeoCode() != null) airport.setGeoCode(request.getGeoCode());
+
+        if(request.getTimeZone() != null) airport.setTimeZone(request.getTimeZone());
 
         return airport;
     }

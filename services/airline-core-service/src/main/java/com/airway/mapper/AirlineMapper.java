@@ -22,16 +22,24 @@ public class AirlineMapper {
                 .headquartersCityId(request.getHeadquartersCityId())
                 .status(request.getStatus())
                 .ownerId(ownerId)
+                .updatedById(ownerId)
                 .build();
 
-        if(request.getSupportEmail() != null || request.getSupportPhone() != null || request.getSupportHours() != null)
+        Support support = new Support();
+        if(request.getSupportEmail() != null)
         {
-            airline.setSupport(Support.builder()
-                            .phone(request.getSupportPhone())
-                            .email(request.getSupportEmail())
-                            .hours(request.getSupportHours())
-                    .build());
+            support.setEmail(request.getSupportEmail());
         }
+        if(request.getSupportPhone() != null)
+        {
+            support.setPhone(request.getSupportPhone());
+        }
+        if(request.getSupportHours() != null)
+        {
+            support.setHours(request.getSupportHours());
+        }
+
+        airline.setSupport(support);
         return airline;
     }
 
@@ -50,7 +58,9 @@ public class AirlineMapper {
                 .createdAt(airline.getCreatedAt())
                 .updatedAt(airline.getUpdatedAt())
                 .ownerId(airline.getOwnerId())
+                .headquartersCityId(airline.getHeadquartersCityId())
                 .updatedById(airline.getUpdatedById())
+                .support(airline.getSupport())
                 .build();
     }
 

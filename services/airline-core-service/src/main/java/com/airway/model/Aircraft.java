@@ -1,6 +1,7 @@
 package com.airway.model;
 
 import com.airway.enums.AircraftStatus;
+import com.airway.exceptions.SeatCountMissMatchException;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
@@ -101,7 +102,7 @@ public class Aircraft {
     {
         if(seatingCapacity != null && !seatingCapacity.equals(getTotalSeats()))
         {
-            throw new IllegalStateException("seat count mismatch");
+            throw new SeatCountMissMatchException("seat count mismatch");
         }
     }
 

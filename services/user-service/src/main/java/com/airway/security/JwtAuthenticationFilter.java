@@ -50,9 +50,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             String email = jwtService.extractUsername(jwt);
             List<String> roles = jwtService.extractRoles(jwt);
 
+            JwtUser jwtUser = new JwtUser(userId,email);
             UsernamePasswordAuthenticationToken authToken =
                     new UsernamePasswordAuthenticationToken(
-                            userId,   //store userId as principal
+                            jwtUser,   //store as principal
                             null,
                             roles.stream()
                                     .map(SimpleGrantedAuthority::new)

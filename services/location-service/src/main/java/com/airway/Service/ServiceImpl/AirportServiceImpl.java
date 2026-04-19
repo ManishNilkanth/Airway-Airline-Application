@@ -1,7 +1,7 @@
 package com.airway.Service.ServiceImpl;
 
 import com.airway.Repository.CityRepository;
-import com.airway.exceptions.AirportAlreadyExistsByIADACode;
+import com.airway.exceptions.AirportAlreadyExistsByIADACodeException;
 import com.airway.Repository.AirportRepository;
 import com.airway.Service.AirportService;
 import com.airway.exceptions.AirportNotFoundException;
@@ -33,7 +33,7 @@ public class AirportServiceImpl implements AirportService {
 
         if(airportRepository.existsByIataCode(request.getIataCode()))
         {
-            throw new AirportAlreadyExistsByIADACode(
+            throw new AirportAlreadyExistsByIADACodeException(
                     String.format("Airport with given IADC code %s is already exists",request.getIataCode())
             );
         }
@@ -71,8 +71,15 @@ public class AirportServiceImpl implements AirportService {
     @Override
     @Transactional(readOnly = true)
     public List<AirportResponse> getAllAirportByCityId(Long cityId) {
-        return airportRepository.findAll()
-                .stream()
+        List<Airport> airports = airportRepository.findByCityId(cityId);
+
+        if(airports == null)
+        {
+            throw new AirportNotFoundException(
+                    String.format("Airport not found by city id %d",cityId)
+            );
+        }
+        return airports.stream()
                 .map(AirportMapper::mapToAirportResponse)
                 .toList();
     }
@@ -90,7 +97,7 @@ public class AirportServiceImpl implements AirportService {
         {
             if(airportRepository.existsByIataCode(iadaCodeFromRequest))
             {
-                throw new AirportAlreadyExistsByIADACode(
+                throw new AirportAlreadyExistsByIADACodeException(
                         String.format("Airport with given IADC code %s is already exists",iadaCodeFromRequest)
                 );
             }
