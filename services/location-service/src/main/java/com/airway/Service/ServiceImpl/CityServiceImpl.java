@@ -54,6 +54,15 @@ public class CityServiceImpl implements CityService {
                 .orElseThrow(()-> new CityNotFoundException(
                         String.format("City not found with city Id %d",id)
                 ));
+        if(request.getCityCode() != null && !city.getCityCode().equals(request.getCityCode()))
+        {
+            if(cityRepository.existsByCityCode(request.getCityCode()))
+            {
+                throw new CityAlreadyExistsByCityCodeException(
+                        String.format("City exists by City Code %s",request.getCityCode())
+                );
+            }
+        }
         City updatedCity = CityMapper.updateCity(city,request);
         City savedCity = cityRepository.save(updatedCity);
 
